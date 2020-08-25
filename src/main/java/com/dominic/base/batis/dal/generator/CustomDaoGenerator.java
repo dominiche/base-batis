@@ -112,16 +112,12 @@ public class CustomDaoGenerator {
 
         //selectList
         statementId = beanClassName + "." + "selectList";
-//        ResultMap selectList_inlineResultMap = new ResultMap.Builder(configuration, statementId + "-Inline",
-//                resultType, resultMappingList, true).build();
         MappedStatement selectListStatement = new MappedStatement.Builder(configuration, statementId, sqlSource, SqlCommandType.SELECT)
                 .resultMaps(Collections.singletonList(inlineResultMap)).build();
         configuration.addMappedStatement(selectListStatement);
 
         //selectListForMap
         statementId = beanClassName + "." + "selectListForMap";
-//        ResultMap selectListForMap_inlineResultMap = new ResultMap.Builder(configuration, statementId + "-Inline",
-//                Map.class, resultMappingList, true).build();
         MappedStatement selectListForMapStatement = new MappedStatement.Builder(configuration, statementId, sqlSource, SqlCommandType.SELECT)
                 .resultMaps(Collections.singletonList(selectOneForMap_inlineResultMap)).build();
         configuration.addMappedStatement(selectListForMapStatement);

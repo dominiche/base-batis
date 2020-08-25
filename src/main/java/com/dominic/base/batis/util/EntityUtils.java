@@ -90,21 +90,6 @@ public class EntityUtils {
         return name;
     }
 
-    public static WhereSegment getWhereSegment(Field field, Object value, String columnName, boolean useLike) {
-        WhereOperator annotation = field.getAnnotation(WhereOperator.class);
-        if (annotation != null) {
-            Operator operator = annotation.value();
-            return new WhereSegment(columnName, operator, value);
-        }
-
-        if (useLike && value instanceof String) {
-            return new WhereSegment(columnName, Operator.LIKE, value);
-        }
-
-        return new WhereSegment(columnName, Operator.EQ, value);
-    }
-
-
     public static <T> Class<?> getBeanDaoClass(String beanClassName, Class<T> entity, Class parentClass) {
         TypeDescription.Generic genericSuperClass =
                 TypeDescription.Generic.Builder.parameterizedType(parentClass, entity).build();

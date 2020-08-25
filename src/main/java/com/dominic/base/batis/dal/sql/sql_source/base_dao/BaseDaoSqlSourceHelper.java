@@ -6,6 +6,7 @@ import com.dominic.base.batis.dal.sql.build.clause.WhereClause;
 import com.dominic.base.batis.dal.sql.build.clause.segment.UpdateSegment;
 import com.dominic.base.batis.dal.sql.build.clause.segment.WhereSegment;
 import com.dominic.base.batis.util.EntityUtils;
+import com.dominic.base.batis.util.SqlBuilderUtils;
 import lombok.Getter;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.Configuration;
@@ -61,7 +62,7 @@ public class BaseDaoSqlSourceHelper {
                 }
 
                 String columnName = property2ColumnNameMap.get(field.getName());
-                WhereSegment whereSegment = EntityUtils.getWhereSegment(field, value, columnName, useLike);
+                WhereSegment whereSegment = SqlBuilderUtils.getWhereSegment(field, value, columnName, useLike);
                 newClause.add(whereSegment);
             });
         }

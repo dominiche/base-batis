@@ -58,9 +58,7 @@ public class BaseDaoGenerator {
         if (applicationContext instanceof BeanDefinitionRegistry) {
             BeanDefinitionRegistry registry = (BeanDefinitionRegistry) applicationContext;
             AnnotatedGenericBeanDefinition beanDefinition = new AnnotatedGenericBeanDefinition(beanDaoClass);
-            // the mapper interface is the original class of the bean
-            // but, the actual class of the bean is MapperFactoryBean
-            beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(beanDaoClass); // issue #59
+            beanDefinition.getConstructorArgumentValues().addGenericArgumentValue(beanDaoClass);
             beanDefinition.setBeanClass(MapperFactoryBean.class);
             beanDefinition.getPropertyValues().add("sqlSessionFactory", sqlSessionFactory);
             registry.registerBeanDefinition(beanName, beanDefinition);
@@ -106,8 +104,6 @@ public class BaseDaoGenerator {
 
         //selectById
         statementId = beanClassName + "." + "selectById";
-//        ResultMap selectById_inlineResultMap = new ResultMap.Builder(configuration, statementId + "-Inline",
-//                resultType, resultMappingList, true).build();
         BaseDaoSelectByIdSqlSource selectById_sqlSource = new BaseDaoSelectByIdSqlSource(sqlSourceHelper);
         MappedStatement selectByIdStatement = new MappedStatement.Builder(configuration, statementId, selectById_sqlSource, SqlCommandType.SELECT)
                 .resultMaps(Collections.singletonList(inlineResultMap)).build();
@@ -115,8 +111,6 @@ public class BaseDaoGenerator {
 
         //selectList
         statementId = beanClassName + "." + "selectList";
-//        ResultMap selectList_inlineResultMap = new ResultMap.Builder(configuration, statementId + "-Inline",
-//                resultType, resultMappingList, true).build();
         MappedStatement selectListStatement = new MappedStatement.Builder(configuration, statementId, sqlSource, SqlCommandType.SELECT)
                 .resultMaps(Collections.singletonList(inlineResultMap)).build();
         configuration.addMappedStatement(selectListStatement);
