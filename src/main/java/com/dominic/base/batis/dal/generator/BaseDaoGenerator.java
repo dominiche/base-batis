@@ -131,6 +131,12 @@ public class BaseDaoGenerator {
         MappedStatement insertStatement = new MappedStatement.Builder(configuration, statementId, insert_sqlSource, SqlCommandType.INSERT).build();
         configuration.addMappedStatement(insertStatement);
 
+        //insertBatch
+        statementId = beanClassName + "." + "insertBatch";
+        BaseDaoInsertBatchSqlSource insertBatch_sqlSource = new BaseDaoInsertBatchSqlSource(sqlSourceHelper);
+        MappedStatement insertBatchStatement = new MappedStatement.Builder(configuration, statementId, insertBatch_sqlSource, SqlCommandType.INSERT).build();
+        configuration.addMappedStatement(insertBatchStatement);
+
         //update
         statementId = beanClassName + "." + "update";
         BaseDaoUpdateSqlSource update_sqlSource = new BaseDaoUpdateSqlSource(sqlSourceHelper);
