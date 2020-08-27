@@ -3,27 +3,33 @@ package com.dominic.base.batis.dal.sql.db;
 import com.dominic.base.batis.config.BaseBatisConfig;
 import com.dominic.base.batis.dal.sql.build.constant.DBType;
 import com.dominic.base.batis.dal.sql.db.dialect.Dialect;
+import com.dominic.base.batis.dal.sql.db.dialect.MySQLDialect;
 import com.dominic.base.batis.dal.sql.db.dialect.PostgreSQLDialect;
 
 /**
  * Create by dominic on 2020/8/26 17:24.
  */
 public class DialectRouter {
+    private static Dialect dialect = null;
 
     public static Dialect getDBDialect() {
-        Dialect dialect;
+        if (dialect != null) {
+            return dialect;
+        }
         DBType dbType = BaseBatisConfig.dbType;
         switch (dbType) { //todo
-//            case MySQL:
 //            case MariaDB:
+//            case MySQL:
+//                dialect = new MySQLDialect();
+//                break;
             case PostgreSQL:
                 dialect = new PostgreSQLDialect();
                 break;
 //            case Oracle:
-//                dialect = new OraclePagination();
+//                dialect = ;
 //                break;
 //            case DB2:
-//                dialect = new DB2Pagination();
+//                dialect = ;
 //                break;
             default:
                 throw new RuntimeException("The Database's Not Supported! DBType:" + dbType.getDbType());
