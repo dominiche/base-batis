@@ -18,10 +18,10 @@ public class DialectRouter {
         }
         DBType dbType = BaseBatisConfig.dbType;
         switch (dbType) { //todo
-//            case MariaDB:
-//            case MySQL:
-//                dialect = new MySQLDialect();
-//                break;
+            case MariaDB:
+            case MySQL:
+                dialect = new MySQLDialect();
+                break;
             case PostgreSQL:
                 dialect = new PostgreSQLDialect();
                 break;

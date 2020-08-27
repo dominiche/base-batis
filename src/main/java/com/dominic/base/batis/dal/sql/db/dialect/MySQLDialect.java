@@ -13,7 +13,6 @@ import java.util.List;
 public class MySQLDialect extends AbstractDialect {
     @Override
     public List<ColumnInfo> getColumns(String tableName) {
-        //todo
         String sql = "select column_name from information_schema.columns where table_name=#{tableName}";
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("tableName", tableName);
