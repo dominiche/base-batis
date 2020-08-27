@@ -5,6 +5,9 @@ import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.dal.sql.build.clause.WhereClause;
 import com.dominic.base.batis.dal.sql.build.clause.segment.UpdateSegment;
 import com.dominic.base.batis.dal.sql.build.clause.segment.WhereSegment;
+import com.dominic.base.batis.dal.sql.db.DialectRouter;
+import com.dominic.base.batis.dal.sql.db.columns.ColumnInfo;
+import com.dominic.base.batis.dal.sql.db.dialect.Dialect;
 import com.dominic.base.batis.util.EntityUtils;
 import com.dominic.base.batis.util.SqlBuilderUtils;
 import lombok.Getter;
@@ -14,6 +17,7 @@ import org.apache.ibatis.session.Configuration;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Create by dominic on 2020/8/6 17:01.
@@ -25,6 +29,7 @@ public class BaseDaoSqlSourceHelper {
 
     private Map<Field, Method> field2MethodMap = new HashMap<>();
     private Map<String, String> property2ColumnNameMap = new HashMap<>();
+    private volatile Map<String, Field> pureColumnName2FieldMap = null;
 
     public BaseDaoSqlSourceHelper(Configuration configuration, String tableName, Class<?> entity, List<Field> fieldList) {
         this.configuration = configuration;
@@ -43,6 +48,25 @@ public class BaseDaoSqlSourceHelper {
                 throw new RuntimeException(propertyName + "没有get方法！！！", e);
             }
         });
+    }
+
+    public Map<String, Field> getPureColumnName2FieldMap() {
+        if (pureColumnName2FieldMap == null) synchronized (this) {
+            if (pureColumnName2FieldMap == null) {
+                pureColumnName2FieldMap = new HashMap<>();
+                Dialect dbDialect = DialectRouter.getDBDialect();
+                List<ColumnInfo> columnInfoList = dbDialect.getColumns(tableName);
+                Set<String> columnSet = columnInfoList.stream().map(ColumnInfo::getColumnName).collect(Collectors.toSet());
+                field2MethodMap.keySet().forEach(field -> {
+                    String fieldName = field.getName();
+                    String columnName = property2ColumnNameMap.get(fieldName);
+                    if (columnSet.contains(columnName)) {
+                        pureColumnName2FieldMap.put(columnName, field);
+                    }
+                });
+            }
+        }
+        return pureColumnName2FieldMap;
     }
 
     public WhereClause buildWhereClause(Map<String, Object> parameterObjectMap, boolean useLike) {

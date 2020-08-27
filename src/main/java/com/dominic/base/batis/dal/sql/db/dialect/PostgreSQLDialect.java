@@ -15,13 +15,15 @@ public class PostgreSQLDialect extends AbstractDialect {
     public List<ColumnInfo> getColumns(String tableName) {
         String schema = "";
         if (tableName.contains(".")) {
-            String[] split = tableName.split(".");
+            String[] split = tableName.split("\\.");
             schema = split[0];
             tableName = split[1];
         }
-        String sql = "select column_name from information_schema.columns where table_schema="
-                + schema + " and table_name=" + tableName;
+        String sql = "select column_name from information_schema.columns where table_schema=#{tableSchema} and table_name=#{tableName}";
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("tableSchema", schema);
+        paramMap.put("tableName", tableName);
         CustomDao<ColumnInfo> columnInfoCustomDao = DialectHelper.getColumnInfoCustomDao();
-        return columnInfoCustomDao.selectList(sql, new HashMap<>());
+        return columnInfoCustomDao.selectList(sql, paramMap);
     }
 }
