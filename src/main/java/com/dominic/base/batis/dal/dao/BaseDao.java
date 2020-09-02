@@ -18,8 +18,8 @@ public interface BaseDao<T> {
     T selectOne(@Param(ParamName.WHERES) T wheres, @Param(ParamName.SELECT_PARAM) SelectParam whereParam);
 
     T selectById(@Param(ParamName.ID_COLUMN_VALUE) Object value);
-    T selectById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
     List<T> selectById(@Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
+    T selectById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
     List<T> selectById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
 
     List<T> selectList(@Param(ParamName.WHERES) T wheres);
@@ -35,6 +35,11 @@ public interface BaseDao<T> {
     int update(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.UPDATE_PARAM) UpdateParam updateParam);
     int update(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.WHERES) T wheres, @Param(ParamName.UPDATE_PARAM) UpdateParam updateParam);
 
+    int updateById(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.ID_COLUMN_VALUE) Object value);
+    int updateById(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
+    int updateById(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
+    int updateById(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
+
     int insert(@Param(ParamName.INSERT_DATA) T data);
     int insertBatch(@Param(ParamName.COLLECTION) Collection<T> data);
     int save(@Param(ParamName.INSERT_DATA) T data); //主键自增，回填
@@ -43,8 +48,8 @@ public interface BaseDao<T> {
     int saveBatch(@Param(ParamName.COLLECTION) Collection<T> data, @Param(ParamName.KEY_PROPERTY) String keyProperty);
 
     int deleteById(@Param(ParamName.ID_COLUMN_VALUE) Object value);
-    int deleteById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
     int deleteById(@Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
+    int deleteById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
     int deleteById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);
 
 }

@@ -8,23 +8,21 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Create by dominic on 2020/8/6 19:01.
  */
-public class BaseDaoUpdateSqlSource implements SqlSource {
+public class BaseDaoUpdateByIdSqlSource implements SqlSource {
 
     private final Configuration configuration;
     private final String tableName;
 
     private BaseDaoSqlSourceHelper helper;
 
-    public BaseDaoUpdateSqlSource(BaseDaoSqlSourceHelper helper) {
+    public BaseDaoUpdateByIdSqlSource(BaseDaoSqlSourceHelper helper) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
 
@@ -46,9 +44,16 @@ public class BaseDaoUpdateSqlSource implements SqlSource {
         updateSegmentList.addAll(updateParam.getUpdateList());
         updateParam.setUpdateList(updateSegmentList);
 
-        //build whereClause
-        WhereClause newClause = helper.buildWhereClause(map, updateParam.getWhereClause().isUseLike()); //for bean 'wheres'
-        newClause.add(updateParam.getWhereClause().getWhereList());
+        //build idWhereClause
+        String idColumnName = (String) map.getOrDefault(ParamName.ID_COLUMN_NAME, null);
+        idColumnName = StringUtils.isEmpty(idColumnName)?helper.getIdColumnName():idColumnName;
+        Object idValue = map.get(ParamName.ID_COLUMN_VALUE);
+        WhereClause newClause = new WhereClause();
+        if (idValue instanceof Collection) {
+            newClause.in(idColumnName, (Collection) idValue);
+        } else {
+            newClause.eq(idColumnName, idValue);
+        }
         updateParam.setWhereClause(newClause);
 
         Map<String, Object> additionalParameter = new HashMap<>();

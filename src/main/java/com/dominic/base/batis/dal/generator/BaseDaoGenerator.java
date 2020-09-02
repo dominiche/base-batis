@@ -155,6 +155,12 @@ public class BaseDaoGenerator {
         MappedStatement updateStatement = new MappedStatement.Builder(configuration, statementId, update_sqlSource, SqlCommandType.UPDATE).build();
         configuration.addMappedStatement(updateStatement);
 
+        //updateById
+        statementId = beanClassName + "." + "updateById";
+        BaseDaoUpdateByIdSqlSource updateById_sqlSource = new BaseDaoUpdateByIdSqlSource(sqlSourceHelper);
+        MappedStatement updateByIdStatement = new MappedStatement.Builder(configuration, statementId, updateById_sqlSource, SqlCommandType.UPDATE).build();
+        configuration.addMappedStatement(updateByIdStatement);
+
         //deleteById
         statementId = beanClassName + "." + "deleteById";
         BaseDaoDeleteByIdSqlSource deleteById_sqlSource = new BaseDaoDeleteByIdSqlSource(sqlSourceHelper);

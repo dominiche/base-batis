@@ -127,6 +127,17 @@ public class ProductBaseDaoTest extends TestCase {
 	}
 
 	@Test
+	public void testUpdateById() {
+		Product updateData = new Product();
+		updateData.setState(3);
+		int update = productBaseDao.updateById(updateData, 4L);
+//		int update = productBaseDao.updateById(updateData, "product_id", 12L);
+//		int update = productBaseDao.updateById(updateData, Lists.newArrayList(10L, 11L));
+//		int update = productBaseDao.updateById(updateData, "product_id", Lists.newArrayList(2L, 3L));
+		System.out.println(update);
+	}
+
+	@Test
 	public void testUpdate() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product updateData = new Product();
