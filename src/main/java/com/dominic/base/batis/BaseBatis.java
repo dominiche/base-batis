@@ -15,10 +15,12 @@ import java.lang.reflect.Proxy;
  */
 public class BaseBatis {
 
+    @SuppressWarnings("unchecked")
     public static <T> CustomDao<T> getCustomDao(@NonNull Class<T> entity) {
         CustomDaoProxy<T> customDaoProxy = new CustomDaoProxy<>(entity);
         return (CustomDao<T>) Proxy.newProxyInstance(BaseBatis.class.getClassLoader(), new Class[] { CustomDao.class }, customDaoProxy);
     }
+    @SuppressWarnings("unchecked")
     public static <T> BaseDao<T> getBaseDao(@NonNull String tableName, @NonNull Class<T> entity) {
         BaseDaoProxy<T> baseDaoProxy = new BaseDaoProxy<>(tableName, entity);
         return (BaseDao<T>) Proxy.newProxyInstance(BaseBatis.class.getClassLoader(), new Class[] { BaseDao.class }, baseDaoProxy);

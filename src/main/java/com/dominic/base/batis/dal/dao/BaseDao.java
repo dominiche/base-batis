@@ -34,9 +34,9 @@ public interface BaseDao<T> {
     int update(@Param(ParamName.UPDATE_DATA) T updateData, @Param(ParamName.WHERES) T wheres, @Param(ParamName.UPDATE_PARAM) UpdateParam updateParam);
 
     int insert(@Param(ParamName.INSERT_DATA) T data);
-    int insertBatch(@Param(ParamName.INSERT_DATA) Collection<T> data);
-    //save ? todo
-    //saveBatch ?  todo
+    int insertBatch(@Param(ParamName.COLLECTION) Collection<T> data);
+    int save(@Param(ParamName.INSERT_DATA) T data, @Param(ParamName.KEY_PROPERTY) String keyProperty); //主键自增，回填
+    int saveBatch(@Param(ParamName.COLLECTION) Collection<T> data, @Param(ParamName.KEY_PROPERTY) String keyProperty);
 
     int deleteById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Object value);
     int deleteById(@Param(ParamName.ID_COLUMN_NAME) String idColumnName, @Param(ParamName.ID_COLUMN_VALUE) Collection<Object> collection);

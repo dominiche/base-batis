@@ -14,8 +14,7 @@ public class BaseDaoProxy<T> implements InvocationHandler {
     private final String tableName;
     private final Class<T> entityClass;
 
-    private volatile boolean isBaseDaoGenerated = false;
-    private BaseDao<T> entityBaseDao = null;
+    private volatile BaseDao<T> entityBaseDao = null;
 
     public BaseDaoProxy(String tableName, Class<T> entityClass) {
         this.tableName = tableName;
@@ -29,16 +28,11 @@ public class BaseDaoProxy<T> implements InvocationHandler {
     }
 
     private BaseDao<T> getEntityBaseDao() {
-        if (isBaseDaoGenerated) {
-            return entityBaseDao;
-        } else {
+        if (entityBaseDao == null) synchronized (entityClass) {
             if (entityBaseDao == null) {
-                synchronized (entityClass) {
-                    entityBaseDao = BaseDaoGenerator.generateDao(tableName, entityClass);
-                    isBaseDaoGenerated = true;
-                }
+                entityBaseDao = BaseDaoGenerator.generateDao(tableName, entityClass);
             }
-            return entityBaseDao;
         }
+        return entityBaseDao;
     }
 }

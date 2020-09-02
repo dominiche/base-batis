@@ -20,4 +20,6 @@ public interface ParamName {
     String UPDATE_PARAM = "updateParam";
 
     String INSERT_DATA = "insertData";
+    String COLLECTION = "collection";
+    String KEY_PROPERTY = "keyProperty";
 }

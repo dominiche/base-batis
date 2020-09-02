@@ -11,8 +11,14 @@ import com.dominic.base.batis.dal.sql.db.dialect.Dialect;
 import com.dominic.base.batis.util.EntityUtils;
 import com.dominic.base.batis.util.SqlBuilderUtils;
 import lombok.Getter;
+import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -64,6 +70,9 @@ public class BaseDaoSqlSourceHelper {
                         pureColumnName2FieldMap.put(columnName, field);
                     }
                 });
+                if (CollectionUtils.isEmpty(pureColumnName2FieldMap.entrySet())) {
+                    throw new RuntimeException(String.format("没有获取到%s表的字段信息!!!无法继续批量插入操作！", tableName));
+                }
             }
         }
         return pureColumnName2FieldMap;
@@ -142,5 +151,21 @@ public class BaseDaoSqlSourceHelper {
             parameterMappings.add(parameterMapping);
         }
         return idWhereSql;
+    }
+
+    public void handleGeneratedKeys(Map<String, Object> map, String mappedStatementId, String keyPropertyPrefix) {
+        if (map.containsKey(ParamName.KEY_PROPERTY)) { //对save()、saveBatch()方法, 添加自增处理
+            String keyProperty = (String) map.get(ParamName.KEY_PROPERTY);
+            if (!StringUtils.isEmpty(keyProperty)) {
+                String[] keyProperties = keyProperty.split(",");
+                for (int i=0; i<keyProperties.length; ++i) {
+                    keyProperties[i] = keyPropertyPrefix + keyProperties[i];
+                }
+                MappedStatement mappedStatement = configuration.getMappedStatement(mappedStatementId);
+                MetaObject metaObject = SystemMetaObject.forObject(mappedStatement);
+                metaObject.setValue("keyGenerator", Jdbc3KeyGenerator.INSTANCE);
+                metaObject.setValue("keyProperties", keyProperties);
+            }
+        }
     }
 }

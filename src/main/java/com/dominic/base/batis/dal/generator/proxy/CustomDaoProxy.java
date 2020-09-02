@@ -13,8 +13,7 @@ public class CustomDaoProxy<T> implements InvocationHandler {
 
     private final Class<T> entityClass;
 
-    private volatile boolean isCustomDaoGenerated = false;
-    private CustomDao<T> entityCustomDao = null;
+    private volatile CustomDao<T> entityCustomDao = null;
 
     public CustomDaoProxy(Class<T> entityClass) {
         this.entityClass = entityClass;
@@ -27,16 +26,11 @@ public class CustomDaoProxy<T> implements InvocationHandler {
     }
 
     private CustomDao<T> getEntityCustomDao() {
-        if (isCustomDaoGenerated) {
-            return entityCustomDao;
-        } else {
+        if (entityCustomDao == null) synchronized (entityClass) {
             if (entityCustomDao == null) {
-                synchronized (entityClass) {
-                    entityCustomDao = CustomDaoGenerator.generateDao(entityClass);
-                    isCustomDaoGenerated = true;
-                }
+                entityCustomDao = CustomDaoGenerator.generateDao(entityClass);
             }
-            return entityCustomDao;
         }
+        return entityCustomDao;
     }
 }

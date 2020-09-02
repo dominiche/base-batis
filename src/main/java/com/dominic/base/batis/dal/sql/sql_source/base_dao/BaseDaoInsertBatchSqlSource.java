@@ -17,14 +17,14 @@ public class BaseDaoInsertBatchSqlSource implements SqlSource {
 
     private final Configuration configuration;
     private final String tableName;
+    private final String mappedStatementId;
 
     private BaseDaoSqlSourceHelper helper;
 
-
-
-    public BaseDaoInsertBatchSqlSource(BaseDaoSqlSourceHelper helper) {
+    public BaseDaoInsertBatchSqlSource(BaseDaoSqlSourceHelper helper, String mappedStatementId) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
+        this.mappedStatementId = mappedStatementId;
 
         this.helper = helper;
     }
@@ -33,10 +33,11 @@ public class BaseDaoInsertBatchSqlSource implements SqlSource {
     public BoundSql getBoundSql(Object parameterObject) {
         Map<String, Object> map = (Map<String, Object>) parameterObject;
 
-        Collection collection = (Collection) map.get(ParamName.INSERT_DATA);
+        Collection collection = (Collection) map.get(ParamName.COLLECTION);
         if (CollectionUtils.isEmpty(collection)) {
             throw new RuntimeException("empty insert data!!!");
         }
+        helper.handleGeneratedKeys(map, mappedStatementId, "");
 
         Map<String, Field> pureColumnName2FieldMap = helper.getPureColumnName2FieldMap();
         List<String> columnList = new ArrayList<>(pureColumnName2FieldMap.keySet());
@@ -55,7 +56,7 @@ public class BaseDaoInsertBatchSqlSource implements SqlSource {
                 Field field = pureColumnName2FieldMap.get(columnName);
                 String fieldName = field.getName();
                 valueBuilder.append("?").append(",");
-                String property = ParamName.INSERT_DATA + "[" + finalIndex + "]" + "." + fieldName;
+                String property = ParamName.COLLECTION + "[" + finalIndex + "]" + "." + fieldName;
                 ParameterMapping parameterMapping = new ParameterMapping.Builder(configuration, property, field.getType()).build();
                 parameterMappings.add(parameterMapping);
             });
