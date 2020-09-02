@@ -40,12 +40,24 @@ public class ProductBaseDaoTest extends TestCase {
 		data2.setState(1);
 
 		ArrayList<Product> products = Lists.newArrayList(data, data2);
-		productBaseDao.saveBatch(products, "productId");
+//		productBaseDao.saveBatch(products, "productId");
+		productBaseDao.saveBatch(products);
 		System.out.println(String.format("productId auto generated: %d, %d", data.getProductId(), data2.getProductId()));
 	}
 
 	@Test
 	public void testSave() {
+		Product data = new Product();
+		data.setProductNo("P005");
+		data.setProductName("1005");
+		data.setPrice(BigDecimal.valueOf(0.8));
+		data.setState(1);
+		productBaseDao.save(data);
+		System.out.println("id auto generated: " + data.getProductId());
+	}
+
+	@Test
+	public void testSave2() {
 		Product data = new Product();
 		data.setProductNo("P005");
 		data.setProductName("1005");
@@ -79,6 +91,15 @@ public class ProductBaseDaoTest extends TestCase {
 
 	@Test
 	public void testDeleteById() {
+		int result = productBaseDao.deleteById( 9L);
+		System.out.println(result);
+
+		result = productBaseDao.deleteById( Lists.newArrayList(7L, 8L));
+		System.out.println(result);
+	}
+
+	@Test
+	public void testDeleteById2() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		int result = productBaseDao.deleteById("product_id", 2L);
@@ -121,6 +142,15 @@ public class ProductBaseDaoTest extends TestCase {
 
 	@Test
 	public void testSelectById() {
+		Product record = productBaseDao.selectById( 1L);
+		System.out.println(JSONObject.toJSONString(record));
+
+		List<Product> productList = productBaseDao.selectById(Lists.newArrayList(1L, 2L));
+		System.out.println(JSONObject.toJSONString(productList));
+	}
+
+	@Test
+	public void testSelectById2() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product record = productBaseDao.selectById("product_id", 1L);
 		System.out.println(JSONObject.toJSONString(record));

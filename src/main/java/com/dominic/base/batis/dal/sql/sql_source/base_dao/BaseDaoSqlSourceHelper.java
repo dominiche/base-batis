@@ -1,5 +1,6 @@
 package com.dominic.base.batis.dal.sql.sql_source.base_dao;
 
+import com.dominic.base.batis.annotation.Id;
 import com.dominic.base.batis.config.BaseBatisConfig;
 import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.dal.sql.build.clause.WhereClause;
@@ -17,6 +18,7 @@ import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -33,6 +35,9 @@ public class BaseDaoSqlSourceHelper {
     private final Configuration configuration;
     private final String tableName;
 
+    private String idPropertyName = null;
+    private String idColumnName = null;
+
     private Map<Field, Method> field2MethodMap = new HashMap<>();
     private Map<String, String> property2ColumnNameMap = new HashMap<>();
     private volatile Map<String, Field> pureColumnName2FieldMap = null;
@@ -46,6 +51,14 @@ public class BaseDaoSqlSourceHelper {
             String columnName = EntityUtils.getColumnName(field, BaseBatisConfig.mapUnderscoreToCamelCase);
             property2ColumnNameMap.put(propertyName, columnName);
 
+            if (StringUtils.isEmpty(idPropertyName)) {
+                Id id = field.getAnnotation(Id.class);
+                if (id != null) {
+                    idPropertyName = propertyName;
+                    idColumnName = columnName;
+                }
+            }
+
             String methodName = EntityUtils.getMethodName(propertyName);
             try {
                 Method method = entity.getMethod(methodName, (Class<?>[]) null);
@@ -54,6 +67,10 @@ public class BaseDaoSqlSourceHelper {
                 throw new RuntimeException(propertyName + "没有get方法！！！", e);
             }
         });
+
+        if (StringUtils.isEmpty(idPropertyName)) {
+            LoggerFactory.getLogger(BaseDaoSqlSourceHelper.class).warn("entity中没有用@Id标记id字段，在后续使用xxxById或save操作时应当使用显式指定id字段名的重载方法！！！");
+        }
     }
 
     public Map<String, Field> getPureColumnName2FieldMap() {
@@ -126,6 +143,9 @@ public class BaseDaoSqlSourceHelper {
     }
 
     public String buildIdWhereSql(String idColumnName, Object value, List<ParameterMapping> parameterMappings) {
+        if (StringUtils.isEmpty(idColumnName)) {
+            throw new RuntimeException("id字段名为空，请使用@Id在entity中标记id字段，或使用显式指定id字段名的重载方法！");
+        }
         String idWhereSql;
         if (value instanceof Collection) {
             StringBuilder builder = new StringBuilder(idColumnName).append(" IN (");
@@ -154,8 +174,10 @@ public class BaseDaoSqlSourceHelper {
     }
 
     public void handleGeneratedKeys(Map<String, Object> map, String mappedStatementId, String keyPropertyPrefix) {
-        if (map.containsKey(ParamName.KEY_PROPERTY)) { //对save()、saveBatch()方法, 添加自增处理
-            String keyProperty = (String) map.get(ParamName.KEY_PROPERTY);
+        if (map.containsKey(ParamName.KEY_PROPERTY) || !StringUtils.isEmpty(idPropertyName)) {
+            //对save()、saveBatch()方法, 添加自增处理
+            String keyProperty = (String) map.getOrDefault(ParamName.KEY_PROPERTY, null);
+            keyProperty = StringUtils.isEmpty(keyProperty)?idPropertyName:keyProperty;
             if (!StringUtils.isEmpty(keyProperty)) {
                 String[] keyProperties = keyProperty.split(",");
                 for (int i=0; i<keyProperties.length; ++i) {

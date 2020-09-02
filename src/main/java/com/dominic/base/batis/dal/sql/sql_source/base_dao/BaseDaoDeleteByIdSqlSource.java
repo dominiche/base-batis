@@ -5,6 +5,7 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -27,7 +28,8 @@ public class BaseDaoDeleteByIdSqlSource implements SqlSource {
     @Override
     public BoundSql getBoundSql(Object parameterObject) {
         Map<String, Object> map = (Map<String, Object>) parameterObject;
-        String idColumnName = (String) map.get(ParamName.ID_COLUMN_NAME);
+        String idColumnName = (String) map.getOrDefault(ParamName.ID_COLUMN_NAME, null);
+        idColumnName = StringUtils.isEmpty(idColumnName)?helper.getIdColumnName():idColumnName;
         Object value = map.get(ParamName.ID_COLUMN_VALUE);
         String sql = "DELETE FROM " + tableName + " WHERE ";
         List<ParameterMapping> parameterMappings = new ArrayList<>();
