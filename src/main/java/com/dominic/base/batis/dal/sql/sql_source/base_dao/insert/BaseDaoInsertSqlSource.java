@@ -1,6 +1,7 @@
-package com.dominic.base.batis.dal.sql.sql_source.base_dao;
+package com.dominic.base.batis.dal.sql.sql_source.base_dao.insert;
 
 import com.dominic.base.batis.constant.ParamName;
+import com.dominic.base.batis.dal.sql.sql_source.base_dao.BaseDaoSqlSourceHelper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 

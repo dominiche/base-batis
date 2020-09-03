@@ -1,8 +1,9 @@
-package com.dominic.base.batis.dal.sql.sql_source.base_dao;
+package com.dominic.base.batis.dal.sql.sql_source.base_dao.select;
 
 import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.dal.sql.build.SelectParam;
 import com.dominic.base.batis.dal.sql.build.clause.WhereClause;
+import com.dominic.base.batis.dal.sql.sql_source.base_dao.BaseDaoSqlSourceHelper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
@@ -14,16 +15,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Create by dominic on 2020/8/6 18:06.
+ * Create by dominic on 2020/8/5 14:01.
  */
-public class BaseDaoSelectCountSqlSource implements SqlSource {
+public class BaseDaoSelectSqlSource implements SqlSource {
 
     private final Configuration configuration;
     private final String tableName;
 
     private BaseDaoSqlSourceHelper helper;
 
-    public BaseDaoSelectCountSqlSource(BaseDaoSqlSourceHelper helper) {
+    public BaseDaoSelectSqlSource(BaseDaoSqlSourceHelper helper) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
 
@@ -40,8 +41,6 @@ public class BaseDaoSelectCountSqlSource implements SqlSource {
         } else {
             selectParam = SelectParam.select().build();
         }
-        selectParam.setSelectFields("count(*)");
-        selectParam.setSelectCount(true);
 
         boolean useLike = selectParam.getWhereClause().isUseLike();
         WhereClause newClause = helper.buildWhereClause(map, useLike); //for bean 'wheres'

@@ -1,9 +1,9 @@
-package com.dominic.base.batis.dal.sql.sql_source.base_dao;
+package com.dominic.base.batis.dal.sql.sql_source.base_dao.select;
 
 import com.dominic.base.batis.constant.ParamName;
-import com.dominic.base.batis.dal.sql.build.UpdateParam;
+import com.dominic.base.batis.dal.sql.build.SelectParam;
 import com.dominic.base.batis.dal.sql.build.clause.WhereClause;
-import com.dominic.base.batis.dal.sql.build.clause.segment.UpdateSegment;
+import com.dominic.base.batis.dal.sql.sql_source.base_dao.BaseDaoSqlSourceHelper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Create by dominic on 2020/8/6 19:01.
+ * Create by dominic on 2020/8/6 18:06.
  */
-public class BaseDaoUpdateSqlSource implements SqlSource {
+public class BaseDaoSelectCountSqlSource implements SqlSource {
 
     private final Configuration configuration;
     private final String tableName;
 
     private BaseDaoSqlSourceHelper helper;
 
-    public BaseDaoUpdateSqlSource(BaseDaoSqlSourceHelper helper) {
+    public BaseDaoSelectCountSqlSource(BaseDaoSqlSourceHelper helper) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
 
@@ -35,25 +35,23 @@ public class BaseDaoUpdateSqlSource implements SqlSource {
     public BoundSql getBoundSql(Object parameterObject) {
         Map<String, Object> map = (Map<String, Object>) parameterObject;
 
-        UpdateParam updateParam;
-        if (map.containsKey(ParamName.UPDATE_PARAM) && map.get(ParamName.UPDATE_PARAM) != null) {
-            updateParam = (UpdateParam) map.get(ParamName.UPDATE_PARAM);
+        SelectParam selectParam;
+        if (map.containsKey(ParamName.SELECT_PARAM) && map.get(ParamName.SELECT_PARAM) != null) {
+            selectParam = (SelectParam) map.get(ParamName.SELECT_PARAM);
         } else {
-            updateParam = UpdateParam.builder().build();
+            selectParam = SelectParam.select().build();
         }
+        selectParam.setSelectFields("count(*)");
+        selectParam.setSelectCount(true);
 
-        List<UpdateSegment> updateSegmentList = helper.buildUpdateSegments(map);
-        updateSegmentList.addAll(updateParam.getUpdateList());
-        updateParam.setUpdateList(updateSegmentList);
-
-        //build whereClause
-        WhereClause newClause = helper.buildWhereClause(map, updateParam.getWhereClause().isUseLike()); //for bean 'wheres'
-        newClause.add(updateParam.getWhereClause().getWhereList());
-        updateParam.setWhereClause(newClause);
+        boolean useLike = selectParam.getWhereClause().isUseLike();
+        WhereClause newClause = helper.buildWhereClause(map, useLike); //for bean 'wheres'
+        newClause.add(selectParam.getWhereClause().getWhereList());
+        selectParam.setWhereClause(newClause);
 
         Map<String, Object> additionalParameter = new HashMap<>();
         List<ParameterMapping> parameterMappings = new ArrayList<>();
-        String sql = updateParam.getSql(configuration, tableName, additionalParameter, parameterMappings);
+        String sql = selectParam.getSql(configuration, tableName, additionalParameter, parameterMappings);
 
         BoundSql boundSql = new BoundSql(configuration, sql, parameterMappings, parameterObject);
         additionalParameter.forEach(boundSql::setAdditionalParameter);
