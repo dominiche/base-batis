@@ -13,6 +13,7 @@ import com.dominic.base.batis.util.EntityUtils;
 import com.dominic.base.batis.util.SqlBuilderUtils;
 import lombok.Getter;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.reflection.MetaObject;
@@ -175,8 +176,7 @@ public class BaseDaoSqlSourceHelper {
 
     public void handleGeneratedKeys(Map<String, Object> map, String mappedStatementId, String keyPropertyPrefix) {
         if (map.containsKey(ParamName.KEY_PROPERTY)) {//对save()、saveBatch()显式指定自增字段的方法, 添加自增回填处理
-            String keyProperty = (String) map.getOrDefault(ParamName.KEY_PROPERTY, null);
-            keyProperty = StringUtils.isEmpty(keyProperty)?idPropertyName:keyProperty;
+            String keyProperty = (String) map.get(ParamName.KEY_PROPERTY);
             if (!StringUtils.isEmpty(keyProperty)) {
                 String[] keyProperties = keyProperty.split(",");
                 for (int i=0; i<keyProperties.length; ++i) {
@@ -188,5 +188,74 @@ public class BaseDaoSqlSourceHelper {
                 metaObject.setValue("keyProperties", keyProperties);
             }
         }
+    }
+
+    public BoundSql getInsertBoundSql(Object parameterObject, Object data) {
+        List<ParameterMapping> parameterMappings = new ArrayList<>();
+        StringBuilder builder = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder valueBuilder = new StringBuilder(") VALUES (");
+        final boolean[] isFirst = {true};
+        field2MethodMap.forEach((field, method) -> {
+            Object value;
+            try {
+                value = method.invoke(data, (Object[]) null);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            if (value == null) {
+                return;
+            }
+
+            if (isFirst[0]) {
+                isFirst[0] = false;
+            } else {
+                builder.append(",");
+                valueBuilder.append(",");
+            }
+            String fieldName = field.getName();
+            String columnName = property2ColumnNameMap.get(fieldName);
+            builder.append(columnName);
+            valueBuilder.append("?");
+            String property = ParamName.INSERT_DATA + "." + fieldName;
+            ParameterMapping parameterMapping = new ParameterMapping.Builder(configuration, property, field.getType()).build();
+            parameterMappings.add(parameterMapping);
+        });
+        builder.append(valueBuilder).append(")");
+
+        String sql = builder.toString();
+        return new BoundSql(configuration, sql, parameterMappings, parameterObject);
+    }
+
+    public BoundSql getInsertBatchBoundSql(Object parameterObject, Collection collection) {
+        Map<String, Field> pureColumnName2FieldMap = getPureColumnName2FieldMap();
+        List<String> columnList = new ArrayList<>(pureColumnName2FieldMap.keySet());
+        String columnSql = String.join(",", columnList);
+        List<ParameterMapping> parameterMappings = new ArrayList<>();
+        StringBuilder builder = new StringBuilder("INSERT INTO ").append(tableName)
+                .append(" (").append(columnSql).append(") VALUES ");
+
+        Iterator iterator = collection.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            iterator.next();
+            StringBuilder valueBuilder = new StringBuilder("(");
+            int finalIndex = index;
+            columnList.forEach(columnName -> {
+                Field field = pureColumnName2FieldMap.get(columnName);
+                String fieldName = field.getName();
+                valueBuilder.append("?").append(",");
+                String property = ParamName.COLLECTION + "[" + finalIndex + "]" + "." + fieldName;
+                ParameterMapping parameterMapping = new ParameterMapping.Builder(configuration, property, field.getType()).build();
+                parameterMappings.add(parameterMapping);
+            });
+            builder.append(valueBuilder, 0, valueBuilder.length() - 1).append(")");
+            if (iterator.hasNext()) {
+                builder.append(",");
+            }
+            ++index;
+        }
+
+        String sql = builder.toString();
+        return new BoundSql(configuration, sql, parameterMappings, parameterObject);
     }
 }

@@ -5,6 +5,8 @@ import com.dominic.base.batis.config.BaseBatisConfig;
 import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.dal.dao.BaseDao;
 import com.dominic.base.batis.dal.sql.sql_source.base_dao.*;
+import com.dominic.base.batis.dal.sql.sql_source.base_dao.insert.BaseDaoSaveBatchSqlSource;
+import com.dominic.base.batis.dal.sql.sql_source.base_dao.insert.BaseDaoSaveSqlSource;
 import com.dominic.base.batis.util.EntityUtils;
 import lombok.NonNull;
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -130,13 +132,19 @@ public class BaseDaoGenerator {
 
         //insert
         statementId = beanClassName + "." + "insert";
-        BaseDaoInsertSqlSource insert_sqlSource = new BaseDaoInsertSqlSource(sqlSourceHelper, statementId);
+        BaseDaoInsertSqlSource insert_sqlSource = new BaseDaoInsertSqlSource(sqlSourceHelper);
         MappedStatement insertStatement = new MappedStatement.Builder(configuration, statementId, insert_sqlSource, SqlCommandType.INSERT).build();
         configuration.addMappedStatement(insertStatement);
 
+        //insertBatch
+        statementId = beanClassName + "." + "insertBatch";
+        BaseDaoInsertBatchSqlSource insertBatch_sqlSource = new BaseDaoInsertBatchSqlSource(sqlSourceHelper);
+        MappedStatement insertBatchStatement = new MappedStatement.Builder(configuration, statementId, insertBatch_sqlSource, SqlCommandType.INSERT).build();
+        configuration.addMappedStatement(insertBatchStatement);
+
         //save
         statementId = beanClassName + "." + "save";
-        BaseDaoInsertSqlSource save_sqlSource = new BaseDaoInsertSqlSource(sqlSourceHelper, statementId);
+        BaseDaoSaveSqlSource save_sqlSource = new BaseDaoSaveSqlSource(sqlSourceHelper, statementId);
         MappedStatement saveStatement;
         if (StringUtils.isEmpty(sqlSourceHelper.getIdPropertyName())) {
             saveStatement = new MappedStatement.Builder(configuration, statementId, save_sqlSource, SqlCommandType.INSERT).build();
@@ -148,15 +156,9 @@ public class BaseDaoGenerator {
         }
         configuration.addMappedStatement(saveStatement);
 
-        //insertBatch
-        statementId = beanClassName + "." + "insertBatch";
-        BaseDaoInsertBatchSqlSource insertBatch_sqlSource = new BaseDaoInsertBatchSqlSource(sqlSourceHelper, statementId);
-        MappedStatement insertBatchStatement = new MappedStatement.Builder(configuration, statementId, insertBatch_sqlSource, SqlCommandType.INSERT).build();
-        configuration.addMappedStatement(insertBatchStatement);
-
         //saveBatch
         statementId = beanClassName + "." + "saveBatch";
-        BaseDaoInsertBatchSqlSource saveBatch_sqlSource = new BaseDaoInsertBatchSqlSource(sqlSourceHelper, statementId);
+        BaseDaoSaveBatchSqlSource saveBatch_sqlSource = new BaseDaoSaveBatchSqlSource(sqlSourceHelper, statementId);
         MappedStatement saveBatchStatement;
         if (StringUtils.isEmpty(sqlSourceHelper.getIdPropertyName())) {
             saveBatchStatement = new MappedStatement.Builder(configuration, statementId, saveBatch_sqlSource, SqlCommandType.INSERT).build();
