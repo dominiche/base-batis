@@ -23,6 +23,8 @@ public class BaseDaoInsertSqlSource implements SqlSource {
 
     private BaseDaoSqlSourceHelper helper;
 
+    private boolean isConfigForSave = false;
+
     public BaseDaoInsertSqlSource(BaseDaoSqlSourceHelper helper, String mappedStatementId) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
@@ -39,7 +41,10 @@ public class BaseDaoInsertSqlSource implements SqlSource {
         if (data == null) {
             throw new RuntimeException("empty insert data!!!");
         }
-        helper.handleGeneratedKeys(map, mappedStatementId, ParamName.INSERT_DATA + ".");
+        if (map.containsKey(ParamName.KEY_PROPERTY) && !isConfigForSave) {
+            helper.handleGeneratedKeys(map, mappedStatementId, ParamName.INSERT_DATA + ".");
+            isConfigForSave = true;
+        }
 
         Map<Field, Method> field2MethodMap = helper.getField2MethodMap();
         Map<String, String> property2ColumnNameMap = helper.getProperty2ColumnNameMap();

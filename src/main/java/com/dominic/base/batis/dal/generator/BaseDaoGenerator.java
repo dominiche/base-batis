@@ -2,10 +2,12 @@ package com.dominic.base.batis.dal.generator;
 
 import com.dominic.base.batis.config.ApplicationContextHolder;
 import com.dominic.base.batis.config.BaseBatisConfig;
+import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.dal.dao.BaseDao;
 import com.dominic.base.batis.dal.sql.sql_source.base_dao.*;
 import com.dominic.base.batis.util.EntityUtils;
 import lombok.NonNull;
+import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -16,6 +18,7 @@ import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -134,7 +137,15 @@ public class BaseDaoGenerator {
         //save
         statementId = beanClassName + "." + "save";
         BaseDaoInsertSqlSource save_sqlSource = new BaseDaoInsertSqlSource(sqlSourceHelper, statementId);
-        MappedStatement saveStatement = new MappedStatement.Builder(configuration, statementId, save_sqlSource, SqlCommandType.INSERT).build();
+        MappedStatement saveStatement;
+        if (StringUtils.isEmpty(sqlSourceHelper.getIdPropertyName())) {
+            saveStatement = new MappedStatement.Builder(configuration, statementId, save_sqlSource, SqlCommandType.INSERT).build();
+        } else { //有标记了@Id，添加id自增回填处理
+            saveStatement = new MappedStatement.Builder(configuration, statementId, save_sqlSource, SqlCommandType.INSERT)
+                    .keyGenerator(Jdbc3KeyGenerator.INSTANCE)
+                    .keyProperty(ParamName.INSERT_DATA + "." + sqlSourceHelper.getIdPropertyName())
+                    .build();
+        }
         configuration.addMappedStatement(saveStatement);
 
         //insertBatch
@@ -146,7 +157,13 @@ public class BaseDaoGenerator {
         //saveBatch
         statementId = beanClassName + "." + "saveBatch";
         BaseDaoInsertBatchSqlSource saveBatch_sqlSource = new BaseDaoInsertBatchSqlSource(sqlSourceHelper, statementId);
-        MappedStatement saveBatchStatement = new MappedStatement.Builder(configuration, statementId, saveBatch_sqlSource, SqlCommandType.INSERT).build();
+        MappedStatement saveBatchStatement;
+        if (StringUtils.isEmpty(sqlSourceHelper.getIdPropertyName())) {
+            saveBatchStatement = new MappedStatement.Builder(configuration, statementId, saveBatch_sqlSource, SqlCommandType.INSERT).build();
+        } else { //有标记了@Id，添加id自增回填处理
+            saveBatchStatement = new MappedStatement.Builder(configuration, statementId, saveBatch_sqlSource, SqlCommandType.INSERT)
+                    .keyGenerator(Jdbc3KeyGenerator.INSTANCE).keyProperty(sqlSourceHelper.getIdPropertyName()).build();
+        }
         configuration.addMappedStatement(saveBatchStatement);
 
         //update

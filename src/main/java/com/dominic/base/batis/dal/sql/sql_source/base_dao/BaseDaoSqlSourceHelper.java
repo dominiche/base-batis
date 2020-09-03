@@ -174,8 +174,7 @@ public class BaseDaoSqlSourceHelper {
     }
 
     public void handleGeneratedKeys(Map<String, Object> map, String mappedStatementId, String keyPropertyPrefix) {
-        if (map.containsKey(ParamName.KEY_PROPERTY) || !StringUtils.isEmpty(idPropertyName)) { //todo bugs?
-            //对save()、saveBatch()方法, 添加自增处理
+        if (map.containsKey(ParamName.KEY_PROPERTY)) {//对save()、saveBatch()显式指定自增字段的方法, 添加自增回填处理
             String keyProperty = (String) map.getOrDefault(ParamName.KEY_PROPERTY, null);
             keyProperty = StringUtils.isEmpty(keyProperty)?idPropertyName:keyProperty;
             if (!StringUtils.isEmpty(keyProperty)) {

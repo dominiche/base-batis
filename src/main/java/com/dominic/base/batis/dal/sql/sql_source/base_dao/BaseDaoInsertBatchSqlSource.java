@@ -21,6 +21,8 @@ public class BaseDaoInsertBatchSqlSource implements SqlSource {
 
     private BaseDaoSqlSourceHelper helper;
 
+    private boolean isConfigForSave = false;
+
     public BaseDaoInsertBatchSqlSource(BaseDaoSqlSourceHelper helper, String mappedStatementId) {
         this.configuration = helper.getConfiguration();
         this.tableName = helper.getTableName();
@@ -37,7 +39,10 @@ public class BaseDaoInsertBatchSqlSource implements SqlSource {
         if (CollectionUtils.isEmpty(collection)) {
             throw new RuntimeException("empty insert data!!!");
         }
-        helper.handleGeneratedKeys(map, mappedStatementId, "");
+        if (map.containsKey(ParamName.KEY_PROPERTY) && !isConfigForSave) {
+            helper.handleGeneratedKeys(map, mappedStatementId, "");
+            isConfigForSave = true;
+        }
 
         Map<String, Field> pureColumnName2FieldMap = helper.getPureColumnName2FieldMap();
         List<String> columnList = new ArrayList<>(pureColumnName2FieldMap.keySet());

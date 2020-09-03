@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dominic.base.batis.BaseBatis;
 import com.dominic.base.batis.BaseBatisTestApplication;
 import com.dominic.base.batis.dal.dao.BaseDao;
+import com.dominic.base.batis.dal.dao.ProductDao;
 import com.dominic.base.batis.dal.entity.Product;
 import com.dominic.base.batis.dal.sql.build.SelectParam;
 import com.dominic.base.batis.dal.sql.build.UpdateParam;
@@ -11,6 +12,7 @@ import com.google.common.collect.Lists;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,16 +42,16 @@ public class ProductBaseDaoTest extends TestCase {
 		data2.setState(1);
 
 		ArrayList<Product> products = Lists.newArrayList(data, data2);
-//		productBaseDao.saveBatch(products, "productId");
-		productBaseDao.saveBatch(products);
+		productBaseDao.saveBatch(products, "productId");
+//		productBaseDao.saveBatch(products);
 		System.out.println(String.format("productId auto generated: %d, %d", data.getProductId(), data2.getProductId()));
 	}
 
 	@Test
 	public void testSave() {
 		Product data = new Product();
-		data.setProductNo("P005");
-		data.setProductName("1005");
+		data.setProductNo("P008");
+		data.setProductName("1008");
 		data.setPrice(BigDecimal.valueOf(0.8));
 		data.setState(1);
 		productBaseDao.save(data);
@@ -64,6 +66,26 @@ public class ProductBaseDaoTest extends TestCase {
 		data.setPrice(BigDecimal.valueOf(0.8));
 		data.setState(1);
 		productBaseDao.save(data, "productId");
+		System.out.println("productId auto generated: " + data.getProductId());
+
+		data.setProductId(null);
+		productBaseDao.save(data, "productId");
+		System.out.println("productId auto generated: " + data.getProductId());
+	}
+
+	@Autowired
+    private ProductDao productDao;
+	@Test
+	public void testSave3() {
+		Product data = new Product();
+		data.setProductNo("P005");
+		data.setProductName("1005");
+		data.setPrice(BigDecimal.valueOf(0.8));
+		data.setState(4);
+        productDao.save(data);
+		System.out.println("productId auto generated: " + data.getProductId());
+
+        productDao.save(data);
 		System.out.println("productId auto generated: " + data.getProductId());
 	}
 
@@ -115,9 +137,9 @@ public class ProductBaseDaoTest extends TestCase {
 	public void testInsert() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product data = new Product();
-		data.setProductId(4L);
-		data.setProductNo("P004");
-		data.setProductName("1004");
+		data.setProductId(5L);
+		data.setProductNo("P005");
+		data.setProductName("1005");
 		data.setPrice(BigDecimal.valueOf(0.7));
 		data.setState(1);
 		int result = productBaseDao.insert(data);
