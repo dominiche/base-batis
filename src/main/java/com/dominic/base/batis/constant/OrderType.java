@@ -1,4 +1,4 @@
-package com.dominic.base.batis.sql.build.constant;
+package com.dominic.base.batis.constant;
 
 /**
  * Create by dominic on 2020/8/6 11:55.

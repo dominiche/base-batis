@@ -2,7 +2,7 @@ package com.dominic.base.batis.sql.build.clause;
 
 import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.sql.build.clause.segment.WhereSegment;
-import com.dominic.base.batis.sql.build.constant.Operator;
+import com.dominic.base.batis.constant.Operator;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.ibatis.mapping.ParameterMapping;

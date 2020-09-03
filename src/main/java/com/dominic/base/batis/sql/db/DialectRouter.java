@@ -1,7 +1,7 @@
 package com.dominic.base.batis.sql.db;
 
 import com.dominic.base.batis.config.BaseBatisConfig;
-import com.dominic.base.batis.sql.build.constant.DBType;
+import com.dominic.base.batis.constant.DBType;
 import com.dominic.base.batis.sql.db.dialect.Dialect;
 import com.dominic.base.batis.sql.db.dialect.MySQLDialect;
 import com.dominic.base.batis.sql.db.dialect.PostgreSQLDialect;

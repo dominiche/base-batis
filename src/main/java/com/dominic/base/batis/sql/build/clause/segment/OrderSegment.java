@@ -1,6 +1,6 @@
 package com.dominic.base.batis.sql.build.clause.segment;
 
-import com.dominic.base.batis.sql.build.constant.OrderType;
+import com.dominic.base.batis.constant.OrderType;
 import lombok.Getter;
 import lombok.Setter;
 

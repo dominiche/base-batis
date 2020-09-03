@@ -1,6 +1,6 @@
 package com.dominic.base.batis.config;
 
-import com.dominic.base.batis.sql.build.constant.DBType;
+import com.dominic.base.batis.constant.DBType;
 import lombok.Getter;
 import lombok.Setter;
 

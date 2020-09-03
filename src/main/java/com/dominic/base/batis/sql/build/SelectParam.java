@@ -3,7 +3,7 @@ package com.dominic.base.batis.sql.build;
 import com.dominic.base.batis.sql.page.PageInfo;
 import com.dominic.base.batis.sql.build.clause.WhereClause;
 import com.dominic.base.batis.sql.build.clause.segment.OrderSegment;
-import com.dominic.base.batis.sql.build.constant.OrderType;
+import com.dominic.base.batis.constant.OrderType;
 import com.dominic.base.batis.util.SqlBuilderUtils;
 import lombok.Getter;
 import lombok.Setter;
