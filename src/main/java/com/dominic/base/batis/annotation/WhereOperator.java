@@ -1,6 +1,6 @@
 package com.dominic.base.batis.annotation;
 
-import com.dominic.base.batis.dal.sql.build.constant.Operator;
+import com.dominic.base.batis.sql.build.constant.Operator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

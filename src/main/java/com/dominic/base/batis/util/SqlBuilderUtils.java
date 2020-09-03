@@ -2,14 +2,14 @@ package com.dominic.base.batis.util;
 
 import com.dominic.base.batis.annotation.WhereOperator;
 import com.dominic.base.batis.config.BaseBatisConfig;
-import com.dominic.base.batis.dal.page.PageInfo;
-import com.dominic.base.batis.dal.sql.build.clause.segment.WhereSegment;
-import com.dominic.base.batis.dal.sql.build.constant.DBType;
-import com.dominic.base.batis.dal.sql.build.constant.Operator;
-import com.dominic.base.batis.dal.sql.build.pagination.DB2Pagination;
-import com.dominic.base.batis.dal.sql.build.pagination.DefaultPagination;
-import com.dominic.base.batis.dal.sql.build.pagination.DialectPagination;
-import com.dominic.base.batis.dal.sql.build.pagination.OraclePagination;
+import com.dominic.base.batis.sql.page.PageInfo;
+import com.dominic.base.batis.sql.build.clause.segment.WhereSegment;
+import com.dominic.base.batis.sql.build.constant.DBType;
+import com.dominic.base.batis.sql.build.constant.Operator;
+import com.dominic.base.batis.sql.build.pagination.DB2Pagination;
+import com.dominic.base.batis.sql.build.pagination.DefaultPagination;
+import com.dominic.base.batis.sql.build.pagination.DialectPagination;
+import com.dominic.base.batis.sql.build.pagination.OraclePagination;
 
 import java.lang.reflect.Field;
 import java.util.Collection;

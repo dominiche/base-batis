@@ -1,11 +1,11 @@
 package com.dominic.base.batis;
 
-import com.dominic.base.batis.dal.dao.BaseDao;
-import com.dominic.base.batis.dal.dao.CustomDao;
-import com.dominic.base.batis.dal.generator.BaseDaoGenerator;
-import com.dominic.base.batis.dal.generator.CustomDaoGenerator;
-import com.dominic.base.batis.dal.generator.proxy.BaseDaoProxy;
-import com.dominic.base.batis.dal.generator.proxy.CustomDaoProxy;
+import com.dominic.base.batis.generator.dao.BaseDao;
+import com.dominic.base.batis.generator.dao.CustomDao;
+import com.dominic.base.batis.generator.BaseDaoGenerator;
+import com.dominic.base.batis.generator.CustomDaoGenerator;
+import com.dominic.base.batis.generator.proxy.BaseDaoProxy;
+import com.dominic.base.batis.generator.proxy.CustomDaoProxy;
 import lombok.NonNull;
 
 import java.lang.reflect.Proxy;

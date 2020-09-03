@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-@MapperScan("com.dominic.base.batis.dal.dao")
+@MapperScan("com.dominic.base.batis.dao")
 @ComponentScan("com.dominic.base.batis.config")
 @SpringBootApplication
 public class BaseBatisTestApplication {

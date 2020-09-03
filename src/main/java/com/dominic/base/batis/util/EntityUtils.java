@@ -2,10 +2,7 @@ package com.dominic.base.batis.util;
 
 import com.dominic.base.batis.annotation.AliasName;
 import com.dominic.base.batis.annotation.Ignore;
-import com.dominic.base.batis.annotation.WhereOperator;
-import com.dominic.base.batis.dal.generator.BaseDaoGenerator;
-import com.dominic.base.batis.dal.sql.build.constant.Operator;
-import com.dominic.base.batis.dal.sql.build.clause.segment.WhereSegment;
+import com.dominic.base.batis.generator.BaseDaoGenerator;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.type.TypeDescription;
 import org.springframework.util.StringUtils;

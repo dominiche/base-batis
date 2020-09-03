@@ -3,11 +3,11 @@ package test;
 import com.alibaba.fastjson.JSONObject;
 import com.dominic.base.batis.BaseBatis;
 import com.dominic.base.batis.BaseBatisTestApplication;
-import com.dominic.base.batis.dal.dao.BaseDao;
-import com.dominic.base.batis.dal.dao.ProductDao;
-import com.dominic.base.batis.dal.entity.Product;
-import com.dominic.base.batis.dal.sql.build.SelectParam;
-import com.dominic.base.batis.dal.sql.build.UpdateParam;
+import com.dominic.base.batis.generator.dao.BaseDao;
+import com.dominic.base.batis.dao.ProductDao;
+import com.dominic.base.batis.entity.Product;
+import com.dominic.base.batis.sql.build.SelectParam;
+import com.dominic.base.batis.sql.build.UpdateParam;
 import com.google.common.collect.Lists;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -42,8 +42,8 @@ public class ProductBaseDaoTest extends TestCase {
 		data2.setState(1);
 
 		ArrayList<Product> products = Lists.newArrayList(data, data2);
-		productBaseDao.saveBatch(products, "productId");
-//		productBaseDao.saveBatch(products);
+//		productBaseDao.saveBatch(products, "productId");
+		productBaseDao.saveBatch(products);
 		System.out.println(String.format("productId auto generated: %d, %d", data.getProductId(), data2.getProductId()));
 	}
 
