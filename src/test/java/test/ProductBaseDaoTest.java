@@ -73,21 +73,21 @@ public class ProductBaseDaoTest extends TestCase {
 		System.out.println("productId auto generated: " + data.getProductId());
 	}
 
-	@Autowired
-    private ProductDao productDao;
-	@Test
-	public void testSave3() {
-		Product data = new Product();
-		data.setProductNo("P005");
-		data.setProductName("1005");
-		data.setPrice(BigDecimal.valueOf(0.8));
-		data.setState(4);
-        productDao.save(data);
-		System.out.println("productId auto generated: " + data.getProductId());
-
-        productDao.save(data);
-		System.out.println("productId auto generated: " + data.getProductId());
-	}
+//	@Autowired
+//    private ProductDao productDao;
+//	@Test
+//	public void testSave3() {
+//		Product data = new Product();
+//		data.setProductNo("P005");
+//		data.setProductName("1005");
+//		data.setPrice(BigDecimal.valueOf(0.8));
+//		data.setState(4);
+//        productDao.save(data);
+//		System.out.println("productId auto generated: " + data.getProductId());
+//
+//        productDao.save(data);
+//		System.out.println("productId auto generated: " + data.getProductId());
+//	}
 
 	@Test
 	public void testInsertBatch() {

@@ -10,14 +10,8 @@ public class BaseBatisConfig {
     public static DBType dbType = DBType.MySQL;
 
 
-    public static boolean isMapUnderscoreToCamelCase() {
-        return mapUnderscoreToCamelCase;
-    }
     public static void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
         BaseBatisConfig.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
-    }
-    public static DBType getDbType() {
-        return dbType;
     }
     public static void setDbType(DBType dbType) {
         BaseBatisConfig.dbType = dbType;
