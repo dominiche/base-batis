@@ -17,20 +17,11 @@ public class DialectRouter {
         DBType dbType = BaseBatisConfig.dbType;
         switch (dbType) {
             case MariaDB:
-            case MySQL:
-                dialect = new MySQLDialect();
-                break;
-            case PostgreSQL:
-                dialect = new PostgreSQLDialect();
-                break;
-            case Oracle:
-                dialect = new OracleDialect();
-                break;
-            case DB2:
-                dialect = new DB2Dialect();
-                break;
-            default:
-                throw new RuntimeException("The Database's Not Supported! DBType:" + dbType.getDbType());
+            case MySQL: dialect = new MySQLDialect(); break;
+            case PostgreSQL: dialect = new PostgreSQLDialect(); break;
+            case Oracle: dialect = new OracleDialect(); break;
+            case DB2: dialect = new DB2Dialect(); break;
+            default: throw new RuntimeException(dbType.getDbType() + " is Not Supported !");
         }
         return dialect;
     }
