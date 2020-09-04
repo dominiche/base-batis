@@ -1,4 +1,4 @@
-package com.dominic.base.batis.sql.page;
+package com.dominic.base.batis.sql.dto;
 
 
 import lombok.Getter;

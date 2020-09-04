@@ -3,7 +3,7 @@ package com.dominic.base.batis.sql.sql_source.base_dao.update;
 import com.dominic.base.batis.constant.ParamName;
 import com.dominic.base.batis.sql.build.UpdateParam;
 import com.dominic.base.batis.sql.build.clause.WhereClause;
-import com.dominic.base.batis.sql.build.clause.segment.UpdateSegment;
+import com.dominic.base.batis.sql.build.segment.UpdateSegment;
 import com.dominic.base.batis.sql.sql_source.base_dao.BaseDaoSqlSourceHelper;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;

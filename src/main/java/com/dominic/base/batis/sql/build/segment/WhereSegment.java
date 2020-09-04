@@ -1,4 +1,4 @@
-package com.dominic.base.batis.sql.build.clause.segment;
+package com.dominic.base.batis.sql.build.segment;
 
 import com.dominic.base.batis.constant.Operator;
 import lombok.Getter;
