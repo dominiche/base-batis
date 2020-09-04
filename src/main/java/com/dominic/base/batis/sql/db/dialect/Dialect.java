@@ -9,5 +9,13 @@ import java.util.List;
  */
 public interface Dialect {
 
+    /**
+     * 获取表信息
+     */
     List<ColumnInfo> getColumns(String tableName);
+
+    /**
+     * 分页
+     */
+    String getPaginationSql(String selectSql, long offset, long limit);
 }

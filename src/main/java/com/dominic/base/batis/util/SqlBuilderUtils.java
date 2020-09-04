@@ -1,15 +1,12 @@
 package com.dominic.base.batis.util;
 
 import com.dominic.base.batis.annotation.WhereOperator;
-import com.dominic.base.batis.config.BaseBatisConfig;
-import com.dominic.base.batis.sql.page.PageInfo;
-import com.dominic.base.batis.sql.build.clause.segment.WhereSegment;
-import com.dominic.base.batis.constant.DBType;
 import com.dominic.base.batis.constant.Operator;
-import com.dominic.base.batis.sql.build.pagination.DB2Pagination;
-import com.dominic.base.batis.sql.build.pagination.DefaultPagination;
+import com.dominic.base.batis.sql.build.clause.segment.WhereSegment;
 import com.dominic.base.batis.sql.build.pagination.DialectPagination;
-import com.dominic.base.batis.sql.build.pagination.OraclePagination;
+import com.dominic.base.batis.sql.db.DialectRouter;
+import com.dominic.base.batis.sql.db.dialect.Dialect;
+import com.dominic.base.batis.sql.page.PageInfo;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -25,36 +22,11 @@ public class SqlBuilderUtils {
             return selectSql;
         }
 
-        if (dialectPagination == null) {
-            dialectPagination = getDefaultPagination();
-        }
-
+        Dialect dialect = DialectRouter.getDBDialect();
         long limit = pageInfo.getPageSize();
         long offset = (pageInfo.getPageIndex() - 1) * limit;
-        return dialectPagination.getPaginationSql(selectSql, offset, limit);
+        return dialect.getPaginationSql(selectSql, offset, limit);
     }
-
-    private static DialectPagination getDefaultPagination() {
-        DialectPagination pagination;
-        DBType dbType = BaseBatisConfig.dbType;
-        switch (dbType) {
-            case MySQL:
-            case MariaDB:
-            case PostgreSQL:
-                pagination = new DefaultPagination();
-                break;
-            case Oracle:
-                pagination = new OraclePagination();
-                break;
-            case DB2:
-                pagination = new DB2Pagination();
-                break;
-            default:
-                throw new RuntimeException("The Database's Not Supported! DBType:" + dbType.getDbType());
-        }
-        return pagination;
-    }
-
 
     public static WhereSegment getWhereSegment(Field field, Object value, String columnName, boolean useLike) {
         WhereOperator annotation = field.getAnnotation(WhereOperator.class);

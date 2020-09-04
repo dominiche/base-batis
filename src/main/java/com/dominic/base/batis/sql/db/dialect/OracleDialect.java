@@ -19,4 +19,11 @@ public class OracleDialect extends AbstractDialect {
         CustomDao<ColumnInfo> columnInfoCustomDao = DialectHelper.getColumnInfoCustomDao();
         return columnInfoCustomDao.selectList(sql, paramMap);
     }
+
+    @Override
+    public String getPaginationSql(String selectSql, long offset, long limit) {
+        return "SELECT * FROM ( " +
+                "SELECT t.*, ROWNUM rn FROM ( " + selectSql + " ) t WHERE ROWNUM <=" + (offset + limit) +
+                ") WHERE rn > " + offset;
+    }
 }

@@ -27,4 +27,13 @@ public class DB2Dialect extends AbstractDialect {
         CustomDao<ColumnInfo> columnInfoCustomDao = DialectHelper.getColumnInfoCustomDao();
         return columnInfoCustomDao.selectList(sql, paramMap);
     }
+
+    @Override
+    public String getPaginationSql(String selectSql, long offset, long limit) {
+        long startNumber = offset + 1;
+        long endNumber = offset + limit;
+        return "SELECT * FROM ( " +
+                "SELECT B.*, ROWNUMBER() OVER() AS RN FROM ( " + selectSql + ") AS B " +
+                ") AS A WHERE A.RN BETWEEN " + startNumber + " AND "+ endNumber;
+    }
 }
