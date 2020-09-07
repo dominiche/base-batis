@@ -3,12 +3,12 @@ package com.dominic.base.batis.config;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Create by dominic on 2020/7/22 17:51.
  */
-@Component
+@Configuration
 public class ApplicationContextHolder implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
