@@ -50,6 +50,7 @@ public class CustomDaoGenerator {
 
         //config MappedStatement
         Configuration configuration = sqlSessionFactory.getConfiguration();
+        if (BaseBatisConfig.mapUnderscoreToCamelCase == null) BaseBatisConfig.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
         configMappedStatement(configuration, beanClassName, entity);
 
 

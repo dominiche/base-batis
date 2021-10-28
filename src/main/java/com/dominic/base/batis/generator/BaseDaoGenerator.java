@@ -64,6 +64,7 @@ public class BaseDaoGenerator {
 
         //config MappedStatement
         Configuration configuration = sqlSessionFactory.getConfiguration();
+        if (BaseBatisConfig.mapUnderscoreToCamelCase == null) BaseBatisConfig.setMapUnderscoreToCamelCase(configuration.isMapUnderscoreToCamelCase());
         configMappedStatement(configuration, beanClassName, entity, tableName);
 
         //get dao
