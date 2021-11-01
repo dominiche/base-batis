@@ -1,0 +1,35 @@
+server:
+    port: 8080
+#    context-path:
+
+logging:
+    config: classpath:logback-spring.xml
+    level:
+        org.apache.mybatis: DEBUG
+        org.spring.framework: DEBUG
+
+spring:
+    application:
+        name: base-batis-demo
+
+    datasource:
+        name: test
+        url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8
+        username: root
+        password: root
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        filters: stat
+        maxActive: 20
+        initialSize: 10
+        maxWait: 1200
+        minIdle: 1
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: select 'x'
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+
