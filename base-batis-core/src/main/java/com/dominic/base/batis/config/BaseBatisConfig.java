@@ -22,13 +22,20 @@ public class BaseBatisConfig {
     /**
      * 是否开启下划线和驼峰转换, 默认开启
      */
-    public static Boolean mapUnderscoreToCamelCase = true;
+    public static Boolean mapUnderscoreToCamelCase = Boolean.TRUE;
 
     /**
      * 数据库类型，只影响使用SelectParam做分页的情况(不同数据库类型分页方式不一样)
      * 默认是MySQL，如果分页支持 “limit #{size} offset #{offset}” 这样的方式，可以不用更改数据库类型。
      */
     public static DBType dbType = DBType.MySQL;
+
+    /**
+     * 批量插入时，是否通过dbType获取准确的表columns
+     * true: 通过数据库表获取准确的columns，@see {Dialect#getColumns(java.lang.String)}，{BaseDaoSqlSourceHelper#getPureColumnName2FieldMap()}
+     * false: 仅通过entity的field做表字段的映射。多余的字段请用@Ignore标注，否则批量插入时可能报表中没有该字段的错误。
+     */
+    public static Boolean columnsByDbType = Boolean.FALSE;
 
 
 

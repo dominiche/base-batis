@@ -39,8 +39,10 @@ public class BaseDaoSqlSourceHelper {
     private String idPropertyName = null;
     private String idColumnName = null;
 
-    private Map<Field, Method> field2MethodMap = new HashMap<>();
-    private Map<String, String> property2ColumnNameMap = new HashMap<>();
+    private final Map<Field, Method> field2MethodMap = new HashMap<>();
+    private final Map<String, String> property2ColumnNameMap = new HashMap<>();
+    private final Map<String, Field> columnName2FieldMap = new HashMap<>();
+
     private volatile Map<String, Field> pureColumnName2FieldMap = null;
 
     public BaseDaoSqlSourceHelper(Configuration configuration, String tableName, Class<?> entity, List<Field> fieldList) {
@@ -48,9 +50,14 @@ public class BaseDaoSqlSourceHelper {
         this.tableName = tableName;
 
         fieldList.forEach(field -> {
+            if (!EntityUtils.notIgnore(field)) {
+                return; //忽略该字段
+            }
+
             String propertyName = field.getName();
             String columnName = EntityUtils.getColumnName(field, BaseBatisConfig.mapUnderscoreToCamelCase);
             property2ColumnNameMap.put(propertyName, columnName);
+            columnName2FieldMap.put(columnName, field);
 
             if (StringUtils.isBlank(idPropertyName)) {
                 Id id = field.getAnnotation(Id.class);
@@ -227,8 +234,8 @@ public class BaseDaoSqlSourceHelper {
     }
 
     public BoundSql getInsertBatchBoundSql(Object parameterObject, Collection collection) {
-        Map<String, Field> pureColumnName2FieldMap = getPureColumnName2FieldMap();
-        List<String> columnList = new ArrayList<>(pureColumnName2FieldMap.keySet());
+        Map<String, Field> column2FieldMap = BaseBatisConfig.columnsByDbType ? getPureColumnName2FieldMap() : columnName2FieldMap;
+        List<String> columnList = new ArrayList<>(column2FieldMap.keySet());
         String columnSql = String.join(",", columnList);
         List<ParameterMapping> parameterMappings = new ArrayList<>();
         StringBuilder builder = new StringBuilder("INSERT INTO ").append(tableName)
@@ -241,7 +248,7 @@ public class BaseDaoSqlSourceHelper {
             StringBuilder valueBuilder = new StringBuilder("(");
             int finalIndex = index;
             columnList.forEach(columnName -> {
-                Field field = pureColumnName2FieldMap.get(columnName);
+                Field field = column2FieldMap.get(columnName);
                 String fieldName = field.getName();
                 valueBuilder.append("?").append(",");
                 String property = ParamName.COLLECTION + "[" + finalIndex + "]" + "." + fieldName;
