@@ -7,4 +7,15 @@ CREATE TABLE `product` (
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB;
+
+
+CREATE TABLE `product_extra` (
+  `product_id` bigint NOT NULL AUTO_INCREMENT,
+  `supplier` varchar(30) NOT NULL,
+  `origin_price` decimal(10,2) NOT NULL,
+  `supplier_address` varchar(100),
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB;

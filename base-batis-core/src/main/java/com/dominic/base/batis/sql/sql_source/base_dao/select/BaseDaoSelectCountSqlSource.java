@@ -39,9 +39,9 @@ public class BaseDaoSelectCountSqlSource implements SqlSource {
         if (map.containsKey(ParamName.SELECT_PARAM) && map.get(ParamName.SELECT_PARAM) != null) {
             selectParam = (SelectParam) map.get(ParamName.SELECT_PARAM);
         } else {
-            selectParam = SelectParam.select().build();
+            selectParam = SelectParam.newInstance();
         }
-        selectParam.setSelectFields("count(*)");
+        selectParam.setSelectFields("count(1)");
         selectParam.setSelectCount(true);
 
         boolean useLike = selectParam.getWhereClause().isUseLike();

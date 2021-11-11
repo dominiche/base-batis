@@ -31,11 +31,17 @@ public class BaseBatisConfig {
     public static DBType dbType = DBType.MySQL;
 
     /**
-     * 批量插入时，是否通过dbType获取准确的表columns
-     * true: 通过数据库表获取准确的columns，@see {Dialect#getColumns(java.lang.String)}，{BaseDaoSqlSourceHelper#getPureColumnName2FieldMap()}
+     * ”select *“ 或 批量插入时，是否通过dbType获取准确的表columns。默认是通过entity的field做表字段的映射
+     * true: 通过数据库表获取准确的columns(该方式支持的数据库类型有限)，@see {Dialect#getColumns(java.lang.String)}，{BaseDaoSqlSourceHelper#getPureColumnName2FieldMap()}
      * false: 仅通过entity的field做表字段的映射。多余的字段请用@Ignore标注，否则批量插入时可能报表中没有该字段的错误。
      */
     public static Boolean columnsByDbType = Boolean.FALSE;
+    /**
+     * 是否使用”select *“。默认是不使用
+     * true: 使用"select *"来查询所有字段
+     * false: 不使用"select *"来查询所有字段, 将根据columnsByDbType来判断使用那种方式填充具体表字段。
+     */
+    public static Boolean userSelectStar = Boolean.FALSE;
 
 
 
@@ -50,5 +56,11 @@ public class BaseBatisConfig {
     }
     public static void setDbType(DBType dbType) {
         BaseBatisConfig.dbType = dbType;
+    }
+    public static void setColumnsByDbType(boolean columnsByDbType) {
+        BaseBatisConfig.columnsByDbType = columnsByDbType;
+    }
+    public static void setUserSelectStar(boolean userSelectStar) {
+        BaseBatisConfig.userSelectStar = userSelectStar;
     }
 }
