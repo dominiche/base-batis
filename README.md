@@ -7,7 +7,7 @@ Based on myBatis，单表操作更便捷。
 <dependency>
     <groupId>dominic.base</groupId>
     <artifactId>base-batis</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
