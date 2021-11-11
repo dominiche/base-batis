@@ -33,7 +33,7 @@ public class WhereClause {
     public void like(String columnName, String value) {
         whereList.add(new WhereSegment(columnName, value, true));
     }
-    public void in(String columnName, Collection value) {
+    public <T> void in(String columnName, Collection<T> value) {
         whereList.add(new WhereSegment(columnName, Operator.IN, value));
     }
     public void eq(String columnName, Object value) {
@@ -76,7 +76,7 @@ public class WhereClause {
 
             String property = ParamName.WHERE_PARAM + "." + segment.getColumnName();
             if (operator == Operator.LIKE && value instanceof String) {
-                builder.append(segment.getColumnName()).append(" like CONCAT(?,'%')");
+                builder.append(segment.getColumnName()).append(" LIKE CONCAT(?,'%')");
 
                 ParameterMapping parameterMapping = new ParameterMapping.Builder(configuration, property, value.getClass()).build();
                 parameterMappings.add(parameterMapping);

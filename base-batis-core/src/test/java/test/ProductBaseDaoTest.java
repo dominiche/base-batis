@@ -1,9 +1,11 @@
 package test;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dominic.base.batis.BaseBatisCore;
 import com.dominic.base.batis.config.BaseBatisConfig;
 import com.dominic.base.batis.entity.Product;
+import com.dominic.base.batis.entity.ProductUnionDTO;
 import com.dominic.base.batis.generator.dao.BaseDao;
 import com.dominic.base.batis.sql.build.SelectParam;
 import com.dominic.base.batis.sql.build.UpdateParam;
@@ -214,10 +216,10 @@ public class ProductBaseDaoTest {
 	@Test
 	public void testSelectCount() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.like("product_name", "100")
 				.in("state", Lists.newArrayList(1,2,3))
-				.pageInfo(1, 10)
+				.page(1, 10)
 				.build();
 		long count = productBaseDao.selectCount(build);
 		System.out.println("total:" + count);
@@ -228,19 +230,37 @@ public class ProductBaseDaoTest {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product where = new Product();
 		where.setProductId(1L);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.like("product_name", "100")
-//				.in("state", Lists.newArrayList(1,2,3))
-				.pageInfo(1, 10)
+				.in("state", Lists.newArrayList(1,2,3))
+				.page(1, 10)
 				.build();
 		List<Product> recordList = productBaseDao.selectList(where, build);
 		System.out.println(JSONObject.toJSONString(recordList));
 	}
 
 	@Test
+	public void testSelectParam() {
+		//BaseDao#selectList 返回值变不了类型，只能用ProductUnionDTO获取BaseDao，而不是用Product
+		BaseDao<ProductUnionDTO> productUnionDTOBaseDao = BaseBatisCore.getBaseDao("product", ProductUnionDTO.class);
+		SelectParam build = SelectParam.select("a.product_id, product_name, price, supplier, origin_price")
+				.from("`product`", "a")
+				.join("product_extra", "b").on("a.product_id=b.product_id")
+				.where()
+				.like("product_name", "11")
+				.in("state", Lists.newArrayList(1,2,3))
+				.order().desc("a.create_time")
+				.page(1, 10)
+				.build();
+		//SQL: SELECT a.product_id, product_name, price, supplier, origin_price FROM `product` AS a JOIN product_extra AS b ON a.product_id=b.product_id WHERE product_name LIKE CONCAT(?,'%') AND state IN (?,?,?) ORDER BY a.create_time DESC limit 10 offset 0
+		List<ProductUnionDTO> recordList = productUnionDTOBaseDao.selectList(build);
+		System.out.println(JSON.toJSONString(recordList));
+	}
+
+	@Test
 	public void testSelectOne3() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.eq("product_no", "P123456")
 				.like("product_name", "1001")
 				.in("state", Lists.newArrayList(1,2,3))
@@ -254,7 +274,7 @@ public class ProductBaseDaoTest {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product where = new Product();
 		where.setProductId(1L);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.eq("product_no", "P123456")
 				.in("state", Lists.newArrayList(1,2,3))
 				.build();

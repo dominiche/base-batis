@@ -42,7 +42,7 @@ public class ProductBaseDaoSpringTest extends TestCase {
 		ArrayList<Product> products = Lists.newArrayList(data, data2);
 //		productBaseDao.saveBatch(products, "productId");
 		productBaseDao.saveBatch(products);
-		System.out.println(String.format("productId auto generated: %d, %d", data.getProductId(), data2.getProductId()));
+		System.out.printf("productId auto generated: %d, %d%n", data.getProductId(), data2.getProductId());
 	}
 
 	@Test
@@ -190,10 +190,10 @@ public class ProductBaseDaoSpringTest extends TestCase {
 	@Test
 	public void testSelectCount() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.like("product_name", "111")
 				.in("state", Lists.newArrayList(1,2,3))
-				.pageInfo(1, 10)
+				.page(1, 10)
 				.build();
 		long count = productBaseDao.selectCount(build);
 		System.out.println("total:" + count);
@@ -204,10 +204,10 @@ public class ProductBaseDaoSpringTest extends TestCase {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product where = new Product();
 		where.setProductId(1L);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.like("product_name", "111")
 //				.in("state", Lists.newArrayList(1,2,3))
-				.pageInfo(1, 10)
+				.page(1, 10)
 				.build();
 		List<Product> recordList = productBaseDao.selectList(where, build);
 		System.out.println(JSONObject.toJSONString(recordList));
@@ -216,7 +216,7 @@ public class ProductBaseDaoSpringTest extends TestCase {
 	@Test
 	public void testSelectOne3() {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.eq("product_no", "P123456")
 				.like("product_name", "1111")
 				.in("state", Lists.newArrayList(1,2,3))
@@ -230,7 +230,7 @@ public class ProductBaseDaoSpringTest extends TestCase {
 //		BaseDao<Product> productBaseDao = BaseBatis.getBaseDao("product", Product.class);
 		Product where = new Product();
 		where.setProductId(1L);
-		SelectParam build = SelectParam.select()
+		SelectParam build = SelectParam.where()
 				.eq("product_no", "P123456")
 				.in("state", Lists.newArrayList(1,2,3))
 				.build();
